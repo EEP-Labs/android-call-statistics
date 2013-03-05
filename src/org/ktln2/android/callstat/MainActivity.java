@@ -1,6 +1,6 @@
 package org.ktln2.android.callstat;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
@@ -11,7 +11,7 @@ import android.provider.CallLog.Calls;
 // FIXME: use support library
 
 
-public class MainActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter mAdapter;
 
     @Override
@@ -29,7 +29,7 @@ public class MainActivity extends ListActivity implements LoaderManager.LoaderCa
                 android.R.id.text1
             }
         );
-        setListAdapter(mAdapter);
+        setContentView(R.layout.main);
 
         getLoaderManager().initLoader(0, null, this);
     }

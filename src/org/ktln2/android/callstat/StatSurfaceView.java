@@ -13,6 +13,7 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private String TAG = "StatSurfaceView";
     private float mWidth;
     private float mHeight;
+    private float mRadius;
 
     /*
      * http://developer.android.com/guide/topics/graphics/2d-graphics.html#on-surfaceview
@@ -54,6 +55,8 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
         mWidth = width;
         mHeight = height;
+
+        mRadius = width < height ? width : height;
     }
 
     public void drawPie() {

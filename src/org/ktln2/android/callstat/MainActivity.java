@@ -48,7 +48,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
         StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
         ssv.drawPie();
     }

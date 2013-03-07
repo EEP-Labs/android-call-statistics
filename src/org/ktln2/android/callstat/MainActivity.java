@@ -49,7 +49,27 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
-        ssv.drawPie();
+        float below_minute = 0;
+        float above_minute = 0;
+
+        // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
+        cursor.moveToFirst();
+
+        while (!cursor.isLast()) {
+            int columnIndex = cursor.getColumnIndexOrThrow(Calls.DURATION);
+            long duration = cursor.getLong(columnIndex);
+            if (duration < 60)
+                below_minute++;
+            else
+                above_minute++;
+
+            cursor.moveToNext();
+        }
+
+        ssv.drawPie(new float[]{
+            below_minute,
+            above_minute
+        });
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

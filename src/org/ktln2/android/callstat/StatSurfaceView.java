@@ -59,21 +59,37 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         mRadius = width < height ? width : height;
     }
 
-    public void drawPie() {
+    public void drawPie(float[] values) {
         SurfaceHolder holder = getHolder();
 
         Canvas canvas = holder.lockCanvas();
 
-        Paint p = new Paint();
-        p.setARGB(255, 255, 0, 0);
+        Paint[] p = new Paint[]{
+            new Paint(),
+            new Paint()
+        };
+        p[0].setARGB(255, 255, 0, 0);
+        p[1].setARGB(255, 0, 255, 0);
 
-        canvas.drawArc(
-            new RectF(0, 0, mWidth, mHeight),
-            0.0F,
-            90.0F,
-            true,
-            p
-        );
+        float total = 0;
+        for (int cycle = 0 ; cycle < values.length ; cycle++) {
+            total += values[cycle];
+        }
+
+        float start_angle = 0;
+        float end_angle = 0;
+        for (int cycle = 0 ; cycle < values.length ; cycle++) {
+            end_angle = (values[cycle]/total)*360;
+            canvas.drawArc(
+                new RectF(0, 0, mRadius, mRadius),
+                start_angle,
+                end_angle,
+                true,
+                p[cycle]
+            );
+
+            start_angle += end_angle;
+        }
 
         holder.unlockCanvasAndPost(canvas);
     }

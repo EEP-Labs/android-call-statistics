@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Rect;
 
 
 class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
@@ -57,6 +58,51 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         mHeight = height;
 
         mRadius = width < height ? width : height;
+    }
+
+    /*
+     * Return the data divided using some bins.
+     *
+     * http://stackoverflow.com/questions/10786465/how-to-generate-bins-for-histogram-using-apache-math-3-0-in-java
+     */
+    private static int[] calcHistogram(double[] data, double min, double max, int numBins) {
+        final int[] result = new int[numBins];
+        final double binSize = (max - min)/numBins;
+
+        for (double d : data) {
+            int bin = (int) ((d - min) / binSize);
+            if (bin < 0) { /* this data is smaller than min */ }
+            else if (bin >= numBins) { /* this data point is bigger than max */ }
+            else {
+                result[bin] += 1;
+            }
+        }
+
+        return result;
+    }
+
+    public void drawHistogram(double[] durations) {
+        int[] values = calcHistogram(durations, 0D, 1000D, 100);
+        SurfaceHolder holder = getHolder();
+
+        Canvas canvas = holder.lockCanvas();
+
+        Paint paint = new Paint();
+        paint.setARGB(255, 0, 255, 0);
+
+        int step_x = 10;
+        int step_y = 10;
+
+        Rect rect = new Rect();
+        rect.right = step_x;
+        for (int value : values) {
+            rect.offset(step_x, 0);
+            rect.bottom = step_y*value;
+            canvas.drawRect(
+                rect, paint
+            );
+        }
+        holder.unlockCanvasAndPost(canvas);
     }
 
     public void drawPie(float[] values) {

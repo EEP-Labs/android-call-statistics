@@ -8,7 +8,6 @@ import android.content.CursorLoader;
 import android.widget.SimpleCursorAdapter;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
-import java.util.HashMap;
 // FIXME: use support library
 
 
@@ -52,8 +51,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
      * When the Cursor is loaded save the value retrieved in an Hashmap
      * with as key the number/contact and as value the duration.
      */
-    private HashMap<String, Long> getValues(Cursor cursor) {
-        HashMap<String, Long> hm = new HashMap<String, Long>();
+    private StatisticsMap getValues(Cursor cursor) {
+        StatisticsMap hm = new StatisticsMap();
 
         // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
         cursor.moveToFirst();
@@ -72,7 +71,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
 
-        HashMap<String, Long> hashmap = getValues(cursor);
+        StatisticsMap hashmap = getValues(cursor);
+
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

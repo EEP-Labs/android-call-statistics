@@ -10,11 +10,16 @@ import android.graphics.RectF;
 import android.graphics.Rect;
 
 
+/*
+ * This class aim is to draw statistical stuff using the data passed
+ * using a StatisticsMap instance by the setStat().
+ */
 class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private String TAG = "StatSurfaceView";
     private float mWidth;
     private float mHeight;
     private float mRadius;
+    private StatisticsMap mStat;
 
     /*
      * http://developer.android.com/guide/topics/graphics/2d-graphics.html#on-surfaceview
@@ -60,25 +65,8 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         mRadius = width < height ? width : height;
     }
 
-    /*
-     * Return the data divided using some bins.
-     *
-     * http://stackoverflow.com/questions/10786465/how-to-generate-bins-for-histogram-using-apache-math-3-0-in-java
-     */
-    private static int[] calcHistogram(double[] data, double min, double max, int numBins) {
-        final int[] result = new int[numBins];
-        final double binSize = (max - min)/numBins;
-
-        for (double d : data) {
-            int bin = (int) ((d - min) / binSize);
-            if (bin < 0) { /* this data is smaller than min */ }
-            else if (bin >= numBins) { /* this data point is bigger than max */ }
-            else {
-                result[bin] += 1;
-            }
-        }
-
-        return result;
+    public void setStat(StatisticsMap stat) {
+        mStat = stat;
     }
 
     public void drawHistogram(double[] durations) {

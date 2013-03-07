@@ -8,6 +8,7 @@ import android.content.CursorLoader;
 import android.widget.SimpleCursorAdapter;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
+import java.util.HashMap;
 // FIXME: use support library
 
 
@@ -47,29 +48,31 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         return cl;
     }
 
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
-        float below_minute = 0;
-        float above_minute = 0;
+    /*
+     * When the Cursor is loaded save the value retrieved in an Hashmap
+     * with as key the number/contact and as value the duration.
+     */
+    private HashMap<String, Long> getValues(Cursor cursor) {
+        HashMap<String, Long> hm = new HashMap<String, Long>();
 
         // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
         cursor.moveToFirst();
-
         while (!cursor.isLast()) {
-            int columnIndex = cursor.getColumnIndexOrThrow(Calls.DURATION);
-            long duration = cursor.getLong(columnIndex);
-            if (duration < 60)
-                below_minute++;
-            else
-                above_minute++;
+            long duration = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.DURATION));
+            String number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER));
 
             cursor.moveToNext();
+
+            hm.put(number, duration);
         }
 
-        ssv.drawPie(new float[]{
-            below_minute,
-            above_minute
-        });
+        return hm;
+    }
+
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
+
+        HashMap<String, Long> hashmap = getValues(cursor);
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

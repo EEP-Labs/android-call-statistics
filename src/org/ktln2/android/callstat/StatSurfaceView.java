@@ -11,8 +11,7 @@ import android.graphics.Rect;
 
 
 /*
- * This class aim is to draw statistical stuff using the data passed
- * using a StatisticsMap instance by the setStat().
+ * This class aim is to draw stuff.
  */
 class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private String TAG = "StatSurfaceView";
@@ -65,12 +64,7 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         mRadius = width < height ? width : height;
     }
 
-    public void setStat(StatisticsMap stat) {
-        mStat = stat;
-    }
-
-    public void drawHistogram(double[] durations) {
-        int[] values = calcHistogram(durations, 0D, 1000D, 100);
+    public void drawHistogram(int[] bins) {
         SurfaceHolder holder = getHolder();
 
         Canvas canvas = holder.lockCanvas();
@@ -83,7 +77,7 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
         Rect rect = new Rect();
         rect.right = step_x;
-        for (int value : values) {
+        for (int value : bins) {
             rect.offset(step_x, 0);
             rect.bottom = step_y*value;
             canvas.drawRect(

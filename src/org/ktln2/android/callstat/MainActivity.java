@@ -6,30 +6,23 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.content.CursorLoader;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.ListView;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
 // FIXME: use support library
 
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private SimpleCursorAdapter mAdapter;
+    private CallStatAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAdapter = new SimpleCursorAdapter(
-            this, // context
-            android.R.layout.simple_list_item_1, // layout
-            null, // cursor
-            new String[] {
-                Calls.NUMBER
-            }, // from
-            new int[] {
-                android.R.id.text1
-            }
-        );
         setContentView(R.layout.main);
+
+        ((ListView)findViewById(R.id.list)).setAdapter(mAdapter);
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -73,6 +66,11 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         StatisticsMap hashmap = getValues(cursor);
 
+        ((TextView)findViewById(R.id.n_calls)).setText(hashmap.getTotalCalls() + " calls");
+        ((TextView)findViewById(R.id.n_contacts)).setText(hashmap.getTotalContacts() + " contacts");
+        mAdapter = new CallStatAdapter(this, hashmap);
+        ((ListView)findViewById(R.id.list)).setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

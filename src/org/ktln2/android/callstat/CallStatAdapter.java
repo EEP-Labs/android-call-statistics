@@ -2,6 +2,7 @@ package org.ktln2.android.callstat;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,12 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         CallStat entry = getItem(position);
 
         ((TextView)view.findViewById(R.id.number)).setText(entry.getKey());
-        ((TextView)view.findViewById(R.id.duration)).setText("" + entry.getTotal());
+        ProgressBar pb = ((ProgressBar)view.findViewById(R.id.duration));
+
+        float percent = new Float(entry.getMaxDuration())*100/new Float(mMap.getTotalDuration());
+        ((TextView)view.findViewById(R.id.percent)).setText(percent + "%");
+
+        pb.setProgress((int)percent);
 
         return view;
     }

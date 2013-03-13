@@ -7,6 +7,11 @@ import android.widget.TextView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+// factorize code about PhoneLookup in the data model
+// don't seem strange these imports with respect the above ones?
+import android.net.Uri;
+import android.provider.ContactsContract.PhoneLookup;
+import android.database.Cursor;
 
 
 /*
@@ -43,10 +48,22 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
 
         CallStat entry = getItem(position);
 
-        ((TextView)view.findViewById(R.id.number)).setText(entry.getKey());
+        String phonenumber = entry.getKey();
+        float percent = new Float(entry.getMaxDuration())*100/new Float(mMap.getTotalDuration());
+
+        ((TextView)view.findViewById(R.id.number)).setText(phonenumber);
         ProgressBar pb = ((ProgressBar)view.findViewById(R.id.duration));
 
-        float percent = new Float(entry.getMaxDuration())*100/new Float(mMap.getTotalDuration());
+        // show contact name
+        Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phonenumber));
+        Cursor cursor = mContext.getContentResolver().query(uri, new String[]{PhoneLookup.DISPLAY_NAME}, null, null, null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            ((TextView)view.findViewById(R.id.contact)).setText(
+                cursor.getString(cursor.getColumnIndexOrThrow(PhoneLookup.DISPLAY_NAME))
+            );
+        }
+
         ((TextView)view.findViewById(R.id.percent)).setText(percent + "%");
 
         pb.setProgress((int)percent);

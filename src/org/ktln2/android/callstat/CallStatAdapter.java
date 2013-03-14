@@ -84,6 +84,8 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
                 cursor.getString(cursor.getColumnIndexOrThrow(PhoneLookup.DISPLAY_NAME)) : ""
         );
 
+        cursor.close();
+
         holder.percentView.setText(percent + "%");
 
         pb.setProgress((int)percent);

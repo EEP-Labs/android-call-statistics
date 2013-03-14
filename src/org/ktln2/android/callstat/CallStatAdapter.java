@@ -7,11 +7,6 @@ import android.widget.TextView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-// factorize code about PhoneLookup in the data model
-// don't seem strange these imports with respect the above ones?
-import android.net.Uri;
-import android.provider.ContactsContract.PhoneLookup;
-import android.database.Cursor;
 
 
 /*
@@ -76,15 +71,8 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         ProgressBar pb = holder.pbarView;
 
         // show contact name
-        Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phonenumber));
-        Cursor cursor = mContext.getContentResolver().query(uri, new String[]{PhoneLookup.DISPLAY_NAME}, null, null, null);
-        cursor.moveToFirst();
-        holder.contactView.setText(
-            cursor.getCount() > 0 ?
-                cursor.getString(cursor.getColumnIndexOrThrow(PhoneLookup.DISPLAY_NAME)) : ""
-        );
+        holder.contactView.setText(entry.getContactName());
 
-        cursor.close();
 
         holder.percentView.setText(percent + "%");
 

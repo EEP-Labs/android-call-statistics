@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
             cursor.moveToNext();
 
-            hm.put(number, duration);
+            hm.put(number, duration, this);
         }
 
         return hm;

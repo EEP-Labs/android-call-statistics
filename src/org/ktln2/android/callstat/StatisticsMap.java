@@ -1,5 +1,6 @@
 package org.ktln2.android.callstat;
 
+import android.content.Context;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Comparator;
@@ -41,7 +42,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
         return result;
     }
 
-    public void put(String key, Long value) {
+    public void put(String key, Long value, Context context) {
         // update values
         mMin = value < mMin ? value : mMin;
         mMax = value > mMax ? value : mMax;
@@ -51,7 +52,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
         CallStat set = get(key);
 
         if (set == null) {
-            set = new CallStat(key);
+            set = new CallStat(key, context);
         }
 
         set.add(value);

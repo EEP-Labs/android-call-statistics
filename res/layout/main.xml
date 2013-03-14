@@ -14,12 +14,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
     />
-<org.ktln2.android.callstat.StatSurfaceView
-    android:id="@+id/surface"
-    android:layout_width="fill_parent"
-    android:layout_height="500dp"
-    android:layout_weight="1"
-    />
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"

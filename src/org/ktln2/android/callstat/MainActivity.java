@@ -8,6 +8,7 @@ import android.content.CursorLoader;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
+import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
 // FIXME: use support library
@@ -15,6 +16,7 @@ import android.provider.CallLog.Calls;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private CallStatAdapter mAdapter;
+    private ListView mListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,7 +24,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         setContentView(R.layout.main);
 
-        ((ListView)findViewById(R.id.list)).setAdapter(mAdapter);
+        mListView = (ListView)findViewById(R.id.list);
+
+        LayoutInflater inflater =
+            (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        mListView.addHeaderView(inflater.inflate(R.layout.call_stat_surface, null));
+
+        mListView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(0, null, this);
     }

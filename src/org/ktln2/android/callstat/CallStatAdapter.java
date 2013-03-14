@@ -49,7 +49,7 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         CallStat entry = getItem(position);
 
         String phonenumber = entry.getKey();
-        float percent = new Float(entry.getMaxDuration())*100/new Float(mMap.getTotalDuration());
+        float percent = new Float(entry.getTotalDuration())*100/new Float(mMap.getTotalDuration());
 
         ((TextView)view.findViewById(R.id.number)).setText(phonenumber);
         ProgressBar pb = ((ProgressBar)view.findViewById(R.id.duration));

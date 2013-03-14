@@ -37,7 +37,7 @@ public class CallStat {
         return mMax;
     }
 
-    public long getTotal() {
+    public long getTotalDuration() {
         return mTotal;
     }
 }

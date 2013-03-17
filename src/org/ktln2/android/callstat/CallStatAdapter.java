@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         public TextView contactView;
         public TextView percentView;
         public ProgressBar pbarView;
+        public ImageView photoView;
     }
 
     Context mContext;
@@ -55,6 +57,7 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
             holder.contactView = (TextView)view.findViewById(R.id.contact);
             holder.percentView = (TextView)view.findViewById(R.id.percent);
             holder.pbarView    = (ProgressBar)view.findViewById(R.id.duration);
+            holder.photoView   = (ImageView)view.findViewById(R.id.photo);
 
             view.setTag(holder);
 
@@ -77,6 +80,9 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         holder.percentView.setText(percent + "%");
 
         pb.setProgress((int)percent);
+
+        // show contact photo
+        holder.photoView.setImageBitmap(entry.getContactPhoto());
 
         return view;
     }

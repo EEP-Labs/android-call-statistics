@@ -1,7 +1,6 @@
 package org.ktln2.android.callstat;
 
-import android.view.SurfaceView;
-import android.view.SurfaceHolder;
+import android.view.View;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.graphics.Canvas;
@@ -13,7 +12,7 @@ import android.graphics.Rect;
 /*
  * This class aim is to draw stuff.
  */
-class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+class StatSurfaceView extends View {
     private String TAG = "StatSurfaceView";
     private float mWidth;
     private float mHeight;
@@ -28,7 +27,6 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
      * callbacks (from SurfaceHolder.Callback) by calling addCallback() (pass it this).
      */
     private void init() {
-        getHolder().addCallback(this);
     }
 
     public StatSurfaceView(Context context) {
@@ -46,29 +44,28 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         init();
     }
 
-    // SurfaceHolder.Callback
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        android.util.Log.d(TAG, "surfaceDestroyed()");
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (mStat == null) {
+            return;
+        }
+
+        android.util.Log.d("StatSurfaceView", "ionDraw()");
+
+        // Here we are using the height of the view
+        // and not of the canvas: otherwise se obtain
+        // a dirty flickering
+        canvas.translate(0, getHeight()/2);
+        canvas.scale(1.0F, -1.0F);
+
+        drawHistogram(canvas);
+
+        canvas.scale(1.0F, -1.0F);
+        canvas.translate(0, canvas.getHeight()/2);
     }
 
-    public void surfaceCreated(SurfaceHolder holder) {
-        android.util.Log.d(TAG, "surfaceCreated()");
-    }
-
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        android.util.Log.d(TAG, "surfaceChanged()");
-
-        mWidth = width;
-        mHeight = height;
-
-        mRadius = width < height ? width : height;
-    }
-
-    public void drawHistogram(int[] bins) {
-        SurfaceHolder holder = getHolder();
-
-        Canvas canvas = holder.lockCanvas();
-
+    private void drawHistogram(Canvas canvas) {
+        int[] bins = mStat.getBinsForDurations();
         Paint paint = new Paint();
         paint.setARGB(255, 0, 255, 0);
 
@@ -84,14 +81,10 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                 rect, paint
             );
         }
-        holder.unlockCanvasAndPost(canvas);
     }
 
-    public void drawPie(float[] values) {
-        SurfaceHolder holder = getHolder();
 
-        Canvas canvas = holder.lockCanvas();
-
+    public void drawPie(Canvas canvas, float[] values) {
         Paint[] p = new Paint[]{
             new Paint(),
             new Paint()
@@ -118,7 +111,10 @@ class StatSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
             start_angle += end_angle;
         }
+    }
 
-        holder.unlockCanvasAndPost(canvas);
+    public void update(StatisticsMap map) {
+        mStat = map;
+        postInvalidate();
     }
 }

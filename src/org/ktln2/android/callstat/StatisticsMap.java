@@ -4,6 +4,7 @@ import android.content.Context;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Comparator;
+import java.util.ArrayList;
 
 
 /*
@@ -20,13 +21,13 @@ class StatisticsMap extends TreeMap<String, CallStat> {
     private static final int CALL_STAT_MAP_TYPE_MAX = 1;
 
     // these will contain the duration related values
-    private long mMin = 0, mMax = 0, mTotal = 0, mCount;
+    private long mMin = 0, mMax = 0, mTotal = 0, mCount = 0;
     /*
      * Return the data divided using some bins.
      *
      * http://stackoverflow.com/questions/10786465/how-to-generate-bins-for-histogram-using-apache-math-3-0-in-java
      */
-    public int[] calcHistogram(long[] values, int numBins) {
+    public int[] calcHistogram(Long[] values, int numBins) {
         final int[] result = new int[numBins];
         final double binSize = (mMax - mMin)/numBins;
 
@@ -40,6 +41,22 @@ class StatisticsMap extends TreeMap<String, CallStat> {
         }
 
         return result;
+    }
+
+    public int[] getBinsForDurations() {
+        return calcHistogram(getAllDurations().toArray(new Long[1]), 1000);
+    }
+
+    /*
+     * Return the complete list of all the durations.
+     */
+    public ArrayList<Long> getAllDurations() {
+        ArrayList<Long> entries = new ArrayList<Long>();
+        for (Entry<String, CallStat> entry: entrySet()) {
+            entries.addAll(entry.getValue().getAllDurations());
+        }
+
+        return entries;
     }
 
     public void put(String key, Long value, Context context) {

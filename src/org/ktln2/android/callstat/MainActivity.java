@@ -76,6 +76,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         ((TextView)findViewById(R.id.n_calls)).setText(hashmap.getTotalCalls() + " calls");
         ((TextView)findViewById(R.id.n_contacts)).setText(hashmap.getTotalContacts() + " contacts");
+        ((TextView)findViewById(R.id.total_duration)).setText(hashmap.getTotalDuration() + " seconds");
+        ((TextView)findViewById(R.id.avg_duration)).setText(hashmap.getTotalDuration()/hashmap.getTotalCalls() + " seconds in average");
         mAdapter = new CallStatAdapter(this, hashmap);
         ((ListView)findViewById(R.id.list)).setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();

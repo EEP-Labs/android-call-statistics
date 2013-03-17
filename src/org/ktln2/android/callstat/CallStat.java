@@ -1,10 +1,16 @@
 package org.ktln2.android.callstat;
 
 import java.util.TreeSet;
+import java.io.*;
 import android.net.Uri;
 import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.DisplayPhoto;
 import android.database.Cursor;
 import android.content.Context;
+import android.content.ContentUris;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 
 /*
@@ -21,6 +27,7 @@ public class CallStat {
     private long mMax, mMin, mTotal;
     private String mKey;
     private String mContactName;
+    private Bitmap mContactPhoto = null;
 
     public CallStat(String key, Context context) {
         mKey = key;
@@ -32,14 +39,59 @@ public class CallStat {
          */
         Uri uri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI, Uri.encode(key));
         Cursor cursor = context.getContentResolver().query(
-            uri, new String[]{Contacts.DISPLAY_NAME_PRIMARY}, null, null, null
+            uri, new String[]{Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY}, null, null, null
         );
-        cursor.moveToFirst();
 
-        mContactName = cursor.getCount() > 0 ?
-                cursor.getString(cursor.getColumnIndexOrThrow(Contacts.DISPLAY_NAME_PRIMARY)) : "";
+        // if the cursor is in a good state and has results
+        // continue and go for it
+        if (cursor != null && cursor.moveToFirst()) {
+            mContactName = cursor.getCount() > 0 ?
+                    cursor.getString(cursor.getColumnIndexOrThrow(Contacts.DISPLAY_NAME_PRIMARY)) : "";
 
+            try {
+                mContactPhoto = BitmapFactory.decodeStream(
+                    openPhoto(
+                        cursor.getLong(cursor.getColumnIndexOrThrow(Contacts._ID)),
+                        context)
+                );
+                android.util.Log.i("CallStat", "*********** ok");
+            } catch (android.database.CursorIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
         cursor.close();
+    }
+
+    /*
+     * Following the link
+     *
+     *   <http://stackoverflow.com/questions/10501446/get-profile-picture-of-specific-phone-number-from-contacts-information>
+     */
+    private InputStream openPhoto(long contactId, Context context) {
+        Uri contactUri = ContentUris.withAppendedId(Contacts.CONTENT_URI, contactId);
+        Uri photoUri = Uri.withAppendedPath(contactUri, Contacts.Photo.CONTENT_DIRECTORY);
+        Cursor cursor = context.getContentResolver().query(
+            photoUri,
+            new String[] {Contacts.Photo.PHOTO},
+            null,
+            null,
+            null
+        );
+
+        if (cursor == null) {
+            return null;
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                byte[] data = cursor.getBlob(0);
+                if (data != null) {
+                    return new ByteArrayInputStream(data);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+        return null;
     }
 
     public void add(long value) {
@@ -56,6 +108,10 @@ public class CallStat {
 
     public String getContactName() {
         return mContactName;
+    }
+
+    public Bitmap getContactPhoto() {
+        return mContactPhoto;
     }
 
     public long getMinDuration() {

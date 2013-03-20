@@ -1,20 +1,19 @@
 package org.ktln2.android.callstat;
 
-import android.app.Activity;
-import android.app.LoaderManager;
-import android.content.Loader;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.database.Cursor;
-import android.content.CursorLoader;
+import android.support.v4.content.CursorLoader;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
-// FIXME: use support library
 
 
-public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends SherlockFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private CallStatAdapter mAdapter;
     private ListView mListView;
 
@@ -32,7 +31,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         mListView.setAdapter(mAdapter);
 
-        getLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

@@ -25,9 +25,7 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
 
         mListView = (ListView)findViewById(R.id.list);
 
-        LayoutInflater inflater =
-            (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-        mListView.addHeaderView(inflater.inflate(R.layout.call_stat_surface, null));
+        mListView.setEmptyView(findViewById(android.R.id.empty));
 
         mListView.setAdapter(mAdapter);
 
@@ -69,6 +67,10 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        LayoutInflater inflater =
+            (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        mListView.addHeaderView(inflater.inflate(R.layout.call_stat_surface, null));
+
         StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
 
         StatisticsMap hashmap = getValues(cursor);

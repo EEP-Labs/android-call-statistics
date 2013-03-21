@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/first"
+        android:title="Ordering"
+        android:showAsAction="ifRoom"
+        >
+        <menu>
+            <item android:id="@+id/ordering_total_duration"
+                android:title="Total duration"/>
+            <item android:id="@+id/ordering_total_calls"
+                android:title="Total calls"/>
+            <item android:id="@+id/ordering_avg_duration"
+                android:title="Average duration"/>
+            <item android:id="@+id/ordering_max_duration"
+                android:title="Max duration"/>
+            <item android:id="@+id/ordering_min_duration"
+                android:title="Min duration"/>
+        </menu>
+    </item>
+</menu>

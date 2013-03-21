@@ -1,6 +1,7 @@
 package org.ktln2.android.callstat;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.*;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.database.Cursor;
@@ -30,6 +31,14 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         mListView.setAdapter(mAdapter);
 
         getSupportLoaderManager().initLoader(0, null, this);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

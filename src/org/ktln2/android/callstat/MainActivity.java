@@ -41,6 +41,31 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int ordering_type = 0;
+        switch (item.getItemId()) {
+            case R.id.ordering_total_duration:
+                ordering_type = CallStatAdapter.CALL_STAT_ADAPTER_ORDERING_TOTAL_DURATION;
+                break;
+            case R.id.ordering_total_calls:
+                ordering_type = CallStatAdapter.CALL_STAT_ADAPTER_ORDERING_TOTAL_CALLS;
+                break;
+            case R.id.ordering_avg_duration:
+                ordering_type = CallStatAdapter.CALL_STAT_ADAPTER_ORDERING_AVG_DURATION;
+                break;
+            case R.id.ordering_max_duration:
+                ordering_type = CallStatAdapter.CALL_STAT_ADAPTER_ORDERING_MAX_DURATION;
+                break;
+            case R.id.ordering_min_duration:
+                ordering_type = CallStatAdapter.CALL_STAT_ADAPTER_ORDERING_MIN_DURATION;
+                break;
+        }
+        mAdapter.order(ordering_type);
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader cl = new CursorLoader(
             this,              // context

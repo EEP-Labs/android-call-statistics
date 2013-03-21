@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import java.util.Comparator;
 
 
 /*
@@ -20,6 +21,11 @@ import android.view.LayoutInflater;
  * and a value side by side.
  */
 public class CallStatAdapter extends ArrayAdapter<CallStat> {
+    public final static int CALL_STAT_ADAPTER_ORDERING_TOTAL_DURATION = 0;
+    public final static int CALL_STAT_ADAPTER_ORDERING_TOTAL_CALLS    = 1;
+    public final static int CALL_STAT_ADAPTER_ORDERING_MAX_DURATION   = 2;
+    public final static int CALL_STAT_ADAPTER_ORDERING_MIN_DURATION   = 3;
+    public final static int CALL_STAT_ADAPTER_ORDERING_AVG_DURATION   = 4;
     // the only role of this class is to maintain
     // the expensive information about list item
     // without quering everytime the layout
@@ -37,6 +43,9 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
     Context mContext;
     StatisticsMap mMap;
 
+    /*
+     * From default load the data by max duration.
+     */
     public CallStatAdapter(Context context, StatisticsMap data) {
         super(
             context,
@@ -93,5 +102,52 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         holder.photoView.setImageBitmap(entry.getContactPhoto());
 
         return view;
+    }
+
+    /*
+     * Tell to the adapter to reorder its data with respect to
+     * the quantity passed as argument.
+     */
+    public void order(int type) {
+        Comparator<CallStat> comparator = null;
+        switch(type) {
+            case CALL_STAT_ADAPTER_ORDERING_TOTAL_DURATION:
+                comparator = new Comparator<CallStat>() {
+                    public int compare(CallStat a, CallStat b) {
+                        return (int)(-a.getTotalDuration() + b.getTotalDuration());
+                    }
+                };
+                break;
+            case CALL_STAT_ADAPTER_ORDERING_AVG_DURATION:
+                comparator = new Comparator<CallStat>() {
+                    public int compare(CallStat a, CallStat b) {
+                        return (int)(-a.getAverageDuration() + b.getAverageDuration());
+                    }
+                };
+                break;
+            case CALL_STAT_ADAPTER_ORDERING_MAX_DURATION:
+                comparator = new Comparator<CallStat>() {
+                    public int compare(CallStat a, CallStat b) {
+                        return (int)(-a.getMaxDuration() + b.getMaxDuration());
+                    }
+                };
+                break;
+            case CALL_STAT_ADAPTER_ORDERING_MIN_DURATION:
+                comparator = new Comparator<CallStat>() {
+                    public int compare(CallStat a, CallStat b) {
+                        return (int)(-a.getMinDuration() + b.getMinDuration());
+                    }
+                };
+                break;
+            default:
+            case CALL_STAT_ADAPTER_ORDERING_TOTAL_CALLS:
+                comparator = new Comparator<CallStat>() {
+                    public int compare(CallStat a, CallStat b) {
+                        return (int)(-a.getTotalCalls() + b.getTotalCalls());
+                    }
+                };
+                break;
+        }
+        sort(comparator);
     }
 }

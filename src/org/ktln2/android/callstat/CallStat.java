@@ -122,7 +122,19 @@ public class CallStat {
         return mMax;
     }
 
+    public long getAverageDuration() {
+        return getTotalDuration()/getTotalCalls();
+    }
+
     public long getTotalDuration() {
         return mTotal;
+    }
+
+    public int getTotalCalls() {
+        return mDurations.size();
+    }
+
+    public TreeSet<Long> getAllDurations() {
+        return mDurations;
     }
 }

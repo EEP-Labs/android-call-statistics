@@ -26,8 +26,11 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
     private class Holder {
         public TextView numberView;
         public TextView contactView;
-        public TextView percentView;
-        public ProgressBar pbarView;
+        public TextView contactTotalCallsView;
+        public TextView contactTotalDurationView;
+        public TextView contactAvgDurationView;
+        public TextView contactMaxDurationView;
+        public TextView contactMinDurationView;
         public ImageView photoView;
     }
 
@@ -55,8 +58,11 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
             holder = new Holder();
             holder.numberView  = (TextView)view.findViewById(R.id.number);
             holder.contactView = (TextView)view.findViewById(R.id.contact);
-            holder.percentView = (TextView)view.findViewById(R.id.percent);
-            holder.pbarView    = (ProgressBar)view.findViewById(R.id.duration);
+            holder.contactTotalCallsView = (TextView)view.findViewById(R.id.contact_total_calls);
+            holder.contactTotalDurationView = (TextView)view.findViewById(R.id.contact_total_duration);
+            holder.contactAvgDurationView = (TextView)view.findViewById(R.id.contact_avg_duration);
+            holder.contactMaxDurationView = (TextView)view.findViewById(R.id.contact_max_duration);
+            holder.contactMinDurationView = (TextView)view.findViewById(R.id.contact_min_duration);
             holder.photoView   = (ImageView)view.findViewById(R.id.photo);
 
             view.setTag(holder);
@@ -71,15 +77,17 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         float percent = new Float(entry.getTotalDuration())*100/new Float(mMap.getTotalDuration());
 
         holder.numberView.setText(phonenumber);
-        ProgressBar pb = holder.pbarView;
 
         // show contact name
         holder.contactView.setText(entry.getContactName());
 
+        // fill various statistical data
+        holder.contactTotalCallsView.setText(entry.getTotalCalls()+ " calls");
+        holder.contactTotalDurationView.setText(entry.getTotalDuration() + " seconds");
+        holder.contactAvgDurationView.setText("Average call: " + entry.getAverageDuration());
+        holder.contactMaxDurationView.setText("Max call: " + entry.getMaxDuration());
+        holder.contactMinDurationView.setText("Min call: " + entry.getMinDuration());
 
-        holder.percentView.setText(percent + "%");
-
-        pb.setProgress((int)percent);
 
         // show contact photo
         holder.photoView.setImageBitmap(entry.getContactPhoto());

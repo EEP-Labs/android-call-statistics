@@ -3,11 +3,13 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:padding="8dp"
     >
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="8dp"
     />
     <LinearLayout
         android:orientation="vertical"
@@ -25,22 +27,36 @@
             android:layout_height="wrap_content"
         />
     </LinearLayout>
+    <!-- here go the information about the call made by the user -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:gravity="right"
         >
         <TextView
-            android:id="@+id/percent"
+            android:id="@+id/contact_total_calls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
-        <ProgressBar
-            android:id="@+id/duration"
-            android:max="100"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:indeterminate="false"
-            android:layout_width="100dp"
+        <TextView
+            android:id="@+id/contact_total_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <TextView
+            android:id="@+id/contact_avg_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <TextView
+            android:id="@+id/contact_max_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <TextView
+            android:id="@+id/contact_min_duration"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
     </LinearLayout>

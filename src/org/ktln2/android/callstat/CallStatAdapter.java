@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
+import android.graphics.Typeface;
 import java.util.Comparator;
 
 
@@ -91,7 +94,11 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         holder.contactView.setText(entry.getContactName());
 
         // fill various statistical data
-        holder.contactTotalCallsView.setText(entry.getTotalCalls()+ " calls");
+        String text = new String(entry.getTotalCalls() + " calls");
+        SpannableString ss = new SpannableString(text);
+        ss.setSpan(new StyleSpan(Typeface.BOLD), 0, ss.length(), 0);
+        holder.contactTotalCallsView.setText(ss);
+
         holder.contactTotalDurationView.setText(entry.getTotalDuration() + " seconds");
         holder.contactAvgDurationView.setText("Average call: " + entry.getAverageDuration());
         holder.contactMaxDurationView.setText("Max call: " + entry.getMaxDuration());

@@ -54,7 +54,6 @@ public class CallStat {
                         cursor.getLong(cursor.getColumnIndexOrThrow(Contacts._ID)),
                         context)
                 );
-                android.util.Log.i("CallStat", "*********** ok");
             } catch (android.database.CursorIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }

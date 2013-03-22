@@ -50,18 +50,16 @@ class StatSurfaceView extends View {
             return;
         }
 
-        android.util.Log.d("StatSurfaceView", "ionDraw()");
-
         // Here we are using the height of the view
         // and not of the canvas: otherwise se obtain
         // a dirty flickering
-        canvas.translate(0, getHeight()/2);
+        canvas.translate(0, getHeight());
         canvas.scale(1.0F, -1.0F);
 
         drawHistogram(canvas);
 
         canvas.scale(1.0F, -1.0F);
-        canvas.translate(0, canvas.getHeight()/2);
+        canvas.translate(0, canvas.getHeight());
     }
 
     private void drawHistogram(Canvas canvas) {

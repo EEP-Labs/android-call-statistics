@@ -24,7 +24,7 @@ import android.graphics.BitmapFactory;
  */
 public class CallStat {
     private TreeSet<Long> mDurations;
-    private long mMax, mMin, mTotal;
+    private long mMax, mMin = 100000, mTotal;
     private String mKey;
     private String mContactName;
     private Bitmap mContactPhoto = null;
@@ -95,7 +95,7 @@ public class CallStat {
     }
 
     public void add(long value) {
-        mMin = value < mMin ? value : mMin;
+        mMin = (value < mMin && value > 0) ? value : mMin;
         mMax = value > mMax ? value : mMax;
         mTotal += value;
 

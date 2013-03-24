@@ -9,9 +9,16 @@ import android.support.v4.content.CursorLoader;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
+import android.graphics.Color;
+import com.jjoe64.graphview.BarGraphView;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphViewStyle;
 
 
 public class MainActivity extends SherlockFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -105,10 +112,28 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
             (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         mListView.addHeaderView(inflater.inflate(R.layout.call_stat_surface, null));
 
-        StatSurfaceView ssv = (StatSurfaceView)findViewById(R.id.surface);
 
         StatisticsMap hashmap = getValues(cursor);
 
+
+        int delta = 60;
+        int[] bins = hashmap.getBinsForDurations(60);
+        int nBins = bins.length;
+
+        GraphViewData[] data = new GraphViewData[nBins];
+
+        for (int cycle = 0 ; cycle < nBins ; cycle++) {
+            data[cycle] = new GraphViewData(cycle, bins[cycle]);
+        }
+
+        GraphViewSeries durationSeries = new GraphViewSeries(data);
+
+        GraphView graphView = new BarGraphView(this, "# of calls of given minutes");
+        graphView.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK, Color.DKGRAY));
+        graphView.setViewPort(0, 20);
+        //graphView.setScrollable(true);
+        graphView.addSeries(durationSeries); // data
+        ((LinearLayout)findViewById(R.id.graph_container)).addView(graphView);
         ((TextView)findViewById(R.id.n_calls)).setText(hashmap.getTotalCalls() + " calls");
         ((TextView)findViewById(R.id.n_contacts)).setText(hashmap.getTotalContacts() + " contacts");
         ((TextView)findViewById(R.id.total_duration)).setText(hashmap.getTotalDuration() + " seconds");

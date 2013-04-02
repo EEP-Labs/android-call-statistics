@@ -94,15 +94,14 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         holder.contactView.setText(entry.getContactName());
 
         // fill various statistical data
-        String text = new String(entry.getTotalCalls() + " calls");
+        String text = new String(entry.getTotalCalls() + " calls for " + DateUtils.formatElapsedTimeNG(entry.getTotalDuration()));
         SpannableString ss = new SpannableString(text);
         ss.setSpan(new StyleSpan(Typeface.BOLD), 0, ss.length(), 0);
         holder.contactTotalCallsView.setText(ss);
 
-        holder.contactTotalDurationView.setText(entry.getTotalDuration() + " seconds");
-        holder.contactAvgDurationView.setText("Average call: " + entry.getAverageDuration());
-        holder.contactMaxDurationView.setText("Max call: " + entry.getMaxDuration());
-        holder.contactMinDurationView.setText("Min call: " + entry.getMinDuration());
+        holder.contactAvgDurationView.setText("Average call: " + DateUtils.formatElapsedTimeNG(entry.getAverageDuration()));
+        holder.contactMaxDurationView.setText("Max call: " + DateUtils.formatElapsedTimeNG(entry.getMaxDuration()));
+        holder.contactMinDurationView.setText("Min call: " + DateUtils.formatElapsedTimeNG(entry.getMinDuration()));
 
 
         // show contact photo

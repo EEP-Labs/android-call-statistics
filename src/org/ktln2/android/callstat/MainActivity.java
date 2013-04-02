@@ -139,8 +139,13 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         ((LinearLayout)findViewById(R.id.graph_container)).addView(graphView);
         ((TextView)findViewById(R.id.n_calls)).setText(hashmap.getTotalCalls() + " calls");
         ((TextView)findViewById(R.id.n_contacts)).setText(hashmap.getTotalContacts() + " contacts");
-        ((TextView)findViewById(R.id.total_duration)).setText(hashmap.getTotalDuration() + " seconds");
-        ((TextView)findViewById(R.id.avg_duration)).setText(hashmap.getTotalDuration()/hashmap.getTotalCalls() + " seconds in average");
+        ((TextView)findViewById(R.id.total_duration)).setText(
+            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration())
+        );
+        ((TextView)findViewById(R.id.avg_duration)).setText(
+            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()/hashmap.getTotalCalls())
+                + " in average"
+        );
         mAdapter = new CallStatAdapter(this, hashmap);
         ((ListView)findViewById(R.id.list)).setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();

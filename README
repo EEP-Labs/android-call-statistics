@@ -1,0 +1,20 @@
+This is an Android application that gives you
+statistics about your calls.
+
+DEPENDENCIES
+------------
+
+It requires some libraries:
+
+ * ActionBarSherlock <http://actionbarsherlock.com/>: for uniform UI across
+   different Android versions.
+ * GraphView <https://github.com/jjoe64/GraphView>: for histogram visualization.
+ * AdMob <http://www.google.it/ads/admob/>: advertising.
+
+GETTING STARTED
+---------------
+
+ $ android update project -p .
+ $ android update project --library ../relative/path/to/ActionBarSherlock/
+ $ android update project --library ../relative/path/to/GraphView/
+ $ ant debug && ant installd && adb logcat

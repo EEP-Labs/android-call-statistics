@@ -20,10 +20,13 @@ import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewStyle;
 
+import com.google.ads.*;
+
 
 public class MainActivity extends SherlockFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private CallStatAdapter mAdapter;
     private ListView mListView;
+    private AdView mAdView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

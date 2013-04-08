@@ -1,6 +1,8 @@
 package org.ktln2.android.callstat;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ListView;
+
 
 /**
  * This is a simple framework for a test of an Application.  See
@@ -11,9 +13,10 @@ import android.test.ActivityInstrumentationTestCase2;
  * adb shell am instrument -w \
  * -e class org.ktln2.android.callstat.MainActivityTest \
  * org.ktln2.android.callstat.tests/android.test.InstrumentationTestRunner
+ *
+ * <b>Note:</b> this launches the application and wait all to be loaded.
  */
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
-
     private MainActivity mActivity;
 
     public MainActivityTest() {
@@ -28,7 +31,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     public void testWTF() {
-        assertTrue(false);
+        assertTrue(((ListView)mActivity.findViewById(R.id.list)).getAdapter() != null);
     }
 
 }

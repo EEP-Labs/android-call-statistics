@@ -123,7 +123,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
             default:
                 comparator = new Comparator<CallStat>() {
                     public int compare(CallStat lhs, CallStat rhs) {
-                        return (int)(lhs.getMaxDuration() - rhs.getMaxDuration());
+                        return (int)(-lhs.getMaxDuration() + rhs.getMaxDuration());
                     }
                 };
                 break;

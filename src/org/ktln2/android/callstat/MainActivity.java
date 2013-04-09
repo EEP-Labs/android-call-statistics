@@ -2,10 +2,12 @@ package org.ktln2.android.callstat;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.*;
+
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.database.Cursor;
 import android.support.v4.content.CursorLoader;
+import android.database.Cursor;
+
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
+
 import android.graphics.Color;
 import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.GraphViewSeries;

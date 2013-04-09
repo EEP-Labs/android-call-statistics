@@ -71,7 +71,6 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
             holder.numberView  = (TextView)view.findViewById(R.id.number);
             holder.contactView = (TextView)view.findViewById(R.id.contact);
             holder.contactTotalCallsView = (TextView)view.findViewById(R.id.contact_total_calls);
-            holder.contactTotalDurationView = (TextView)view.findViewById(R.id.contact_total_duration);
             holder.contactAvgDurationView = (TextView)view.findViewById(R.id.contact_avg_duration);
             holder.contactMaxDurationView = (TextView)view.findViewById(R.id.contact_max_duration);
             holder.contactMinDurationView = (TextView)view.findViewById(R.id.contact_min_duration);

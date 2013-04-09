@@ -31,6 +31,9 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     private ListView mListView;
     private AdView mAdView;
 
+    private final static String mMainHeaderFormatString = "%d calls from %d contacts";
+    private final static String mSubHeaderFormatString = "%s (%s in average)";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,6 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         setContentView(R.layout.main);
 
         mListView = (ListView)findViewById(R.id.list);
-
         mListView.setEmptyView(findViewById(android.R.id.empty));
 
         mListView.setAdapter(mAdapter);
@@ -100,13 +102,15 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
      * When the Cursor is loaded save the value retrieved in an Hashmap
      * with as key the number/contact and as value the duration.
      */
-    private StatisticsMap getValues(Cursor cursor) {
+    private StatisticsMap getValuesFromCursor(Cursor cursor) {
         StatisticsMap hm = new StatisticsMap();
 
         // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
         cursor.moveToFirst();
         while (!cursor.isLast()) {
-            long duration = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.DURATION));
+            long duration = cursor.getLong(
+                cursor.getColumnIndexOrThrow(Calls.DURATION)
+            );
             String number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER));
 
             cursor.moveToNext();
@@ -123,7 +127,7 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         mListView.addHeaderView(inflater.inflate(R.layout.call_stat_surface, null));
 
 
-        StatisticsMap hashmap = getValues(cursor);
+        StatisticsMap hashmap = getValuesFromCursor(cursor);
 
 
         int delta = 60;
@@ -144,17 +148,18 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         //graphView.setScrollable(true);
         graphView.addSeries(durationSeries); // data
         ((LinearLayout)findViewById(R.id.graph_container)).addView(graphView);
-        ((TextView)findViewById(R.id.n_calls)).setText(hashmap.getTotalCalls() + " calls");
-        ((TextView)findViewById(R.id.n_contacts)).setText(hashmap.getTotalContacts() + " contacts");
-        ((TextView)findViewById(R.id.total_duration)).setText(
-            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration())
+
+        ((TextView)findViewById(R.id.n_calls)).setText(
+            String.format(mMainHeaderFormatString, hashmap.getTotalCalls(), hashmap.getTotalContacts())
         );
-        ((TextView)findViewById(R.id.avg_duration)).setText(
-            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()/hashmap.getTotalCalls())
-                + " in average"
+        ((TextView)findViewById(R.id.n_contacts)).setText(
+        String.format(
+            mSubHeaderFormatString,
+            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()),
+            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()/hashmap.getTotalCalls()))
         );
         mAdapter = new CallStatAdapter(this, hashmap);
-        ((ListView)findViewById(R.id.list)).setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }
 

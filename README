@@ -17,4 +17,5 @@ GETTING STARTED
  $ android update project -p .
  $ android update project --library ../relative/path/to/ActionBarSherlock/
  $ android update project --library ../relative/path/to/GraphView/
+ $ cp GoogleAdMobAdsSdk-X.X.X.jar libs/
  $ ant debug && ant installd && adb logcat

@@ -43,6 +43,10 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
 
         mListView.setAdapter(mAdapter);
 
+        loadData();
+    }
+
+    private void loadData() {
         getSupportLoaderManager().initLoader(0, null, this);
     }
 

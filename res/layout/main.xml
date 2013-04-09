@@ -18,21 +18,15 @@
         android:id="@+id/n_calls"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-    />
+        android:gravity="center_horizontal"
+        android:textAppearance="@style/RelevantFont"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/n_contacts"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-    />
-    <TextView
-        android:id="@+id/total_duration"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-    />
-    <TextView
-        android:id="@+id/avg_duration"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
     />
     <ListView
         android:id="@+id/list"

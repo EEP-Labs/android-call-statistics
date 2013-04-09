@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RelevantFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">15dp</item>
+    </style>
+    <style name="LessRelevantFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">10dp</item>
+    </style>
+</resources>

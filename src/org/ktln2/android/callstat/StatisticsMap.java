@@ -43,8 +43,14 @@ class StatisticsMap extends TreeMap<String, CallStat> {
         return result;
     }
 
-    public int[] getBinsForDurations() {
-        return calcHistogram(getAllDurations().toArray(new Long[1]), 1000);
+    /*
+     * This returns the bins used to build up the histogram.
+     *
+     * For now we use a resolution of 10 seconds.
+     */
+    public int[] getBinsForDurations(int delta) {
+        int number_of_bins = ((int)mMax)/delta;
+        return calcHistogram(getAllDurations().toArray(new Long[1]), number_of_bins);
     }
 
     /*

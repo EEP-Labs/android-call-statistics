@@ -115,6 +115,12 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
 
             cursor.moveToNext();
 
+            // if there is a + as first character then remove it and
+            // the following two numbers
+            if (number.startsWith("+")) {
+                number = number.substring(3);
+            }
+
             hm.put(number, duration, this);
         }
 

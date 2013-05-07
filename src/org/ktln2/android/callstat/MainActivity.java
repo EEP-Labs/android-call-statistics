@@ -3,6 +3,7 @@ package org.ktln2.android.callstat;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.*;
 
+import android.content.Intent;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
@@ -11,17 +12,9 @@ import android.database.Cursor;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
-import android.widget.LinearLayout;
 import android.view.LayoutInflater;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
-
-import android.graphics.Color;
-import com.jjoe64.graphview.BarGraphView;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.GraphView.GraphViewData;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphViewStyle;
 
 import com.google.ads.*;
 
@@ -30,6 +23,8 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     private CallStatAdapter mAdapter;
     private ListView mListView;
     private AdView mAdView;
+
+    public static StatisticsMap map;
 
     private final static String mMainHeaderFormatString = "%d calls from %d contacts";
     private final static String mSubHeaderFormatString = "%s (%s in average)";
@@ -79,7 +74,12 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
             case R.id.ordering_min_duration:
                 ordering_type = CallStatAdapter.CALL_STAT_ADAPTER_ORDERING_MIN_DURATION;
                 break;
+
+            case R.id.graph:
+                Intent graphIntent = new Intent(this, GraphActivity.class);
+                startActivity(graphIntent);
         }
+        // FIXME: we don't want to order if R.id.graph was selected
         mAdapter.order(ordering_type);
 
         return super.onOptionsItemSelected(item);
@@ -97,6 +97,8 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
 
         return cl;
     }
+
+    // TODO: create getter/setter for StatisticsMap
 
     /*
      * When the Cursor is loaded save the value retrieved in an Hashmap
@@ -128,32 +130,12 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        LayoutInflater inflater =
-            (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-        mListView.addHeaderView(inflater.inflate(R.layout.call_stat_surface, null));
-
-
         StatisticsMap hashmap = getValuesFromCursor(cursor);
 
+        MainActivity.map = hashmap;
 
-        int delta = 60;
-        int[] bins = hashmap.getBinsForDurations(60);
-        int nBins = bins.length;
 
-        GraphViewData[] data = new GraphViewData[nBins];
 
-        for (int cycle = 0 ; cycle < nBins ; cycle++) {
-            data[cycle] = new GraphViewData(cycle, bins[cycle]);
-        }
-
-        GraphViewSeries durationSeries = new GraphViewSeries(data);
-
-        GraphView graphView = new BarGraphView(this, "# of calls of given minutes");
-        graphView.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK, Color.DKGRAY));
-        graphView.setViewPort(0, 20);
-        //graphView.setScrollable(true);
-        graphView.addSeries(durationSeries); // data
-        ((LinearLayout)findViewById(R.id.graph_container)).addView(graphView);
 
         ((TextView)findViewById(R.id.n_calls)).setText(
             String.format(mMainHeaderFormatString, hashmap.getTotalCalls(), hashmap.getTotalContacts())

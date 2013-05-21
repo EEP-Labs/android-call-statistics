@@ -36,7 +36,8 @@ public class GraphActivity extends SherlockFragmentActivity {
 
         GraphView graphView = new BarGraphView(this, "# of calls of given minutes");
         graphView.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK, Color.DKGRAY));
-        graphView.setViewPort(0, 20);
+        graphView.setViewPort(0, 50);
+        graphView.setHorizontalLabels(new String[] {"0", "10", "20", "30", "40", "50"});
         //graphView.setScrollable(true);
         graphView.addSeries(durationSeries); // data
         ((LinearLayout)findViewById(R.id.graph_container)).addView(graphView);

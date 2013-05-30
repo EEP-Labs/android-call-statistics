@@ -7,14 +7,20 @@ import android.content.Intent;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
+
 import android.database.Cursor;
 
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
+
+import android.animation.AnimatorListenerAdapter;
+import android.animation.Animator;
 
 import com.google.ads.*;
 
@@ -23,6 +29,8 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     private CallStatAdapter mAdapter;
     private ListView mListView;
     private AdView mAdView;
+    private View mEmptyView;
+    private ProgressBar mSpinner;
 
     public static StatisticsMap map;
 
@@ -34,10 +42,11 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
-
         mListView = (ListView)findViewById(R.id.list);
-        mListView.setEmptyView(findViewById(android.R.id.empty));
+        mEmptyView = findViewById(android.R.id.empty);
+        mSpinner = (ProgressBar)findViewById(R.id.loading_spinner);
 
+        mListView.setEmptyView(mEmptyView);
         mListView.setAdapter(mAdapter);
 
         loadData();
@@ -46,7 +55,6 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     private void loadData() {
         getSupportLoaderManager().initLoader(0, null, this);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,26 +137,48 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         return hm;
     }
 
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        StatisticsMap hashmap = getValuesFromCursor(cursor);
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor cursor) {
+        new Thread(new Runnable() {
+            public void run() {
+                final StatisticsMap hashmap = getValuesFromCursor(cursor);
+                MainActivity.map = hashmap;
+                mAdapter = new CallStatAdapter(MainActivity.this, hashmap);
 
-        MainActivity.map = hashmap;
+                mListView.post(new Runnable() {
+                    public void run() {
 
+                        ((TextView)findViewById(R.id.n_calls)).setText(
+                            String.format(mMainHeaderFormatString, hashmap.getTotalCalls(), hashmap.getTotalContacts())
+                        );
+                        ((TextView)findViewById(R.id.n_contacts)).setText(
+                        String.format(
+                            mSubHeaderFormatString,
+                            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()),
+                            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()/hashmap.getTotalCalls()))
+                        );
+                        mListView.setAdapter(mAdapter);
+                        mAdapter.notifyDataSetChanged();
 
-
-
-        ((TextView)findViewById(R.id.n_calls)).setText(
-            String.format(mMainHeaderFormatString, hashmap.getTotalCalls(), hashmap.getTotalContacts())
-        );
-        ((TextView)findViewById(R.id.n_contacts)).setText(
-        String.format(
-            mSubHeaderFormatString,
-            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()),
-            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()/hashmap.getTotalCalls()))
-        );
-        mAdapter = new CallStatAdapter(this, hashmap);
-        mListView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                            // Animate the loading view to 0% opacity. After the animation ends,
+                            // set its visibility to GONE as an optimization step (it won't
+                            // participate in layout passes, etc.)
+                            mSpinner.animate()
+                                .alpha(0f)
+                                .setDuration(500)
+                                .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            mSpinner.setVisibility(View.GONE);
+                                        }
+                                    });
+                        } else {
+                            mSpinner.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {

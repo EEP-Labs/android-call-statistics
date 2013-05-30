@@ -4,13 +4,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.*;
 
 import android.content.Intent;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v4.content.CursorLoader;
+import android.os.AsyncTask;
 
 import android.database.Cursor;
 
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -25,7 +22,7 @@ import android.animation.Animator;
 import com.google.ads.*;
 
 
-public class MainActivity extends SherlockFragmentActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends SherlockFragmentActivity {
     private CallStatAdapter mAdapter;
     private ListView mListView;
     private AdView mAdView;
@@ -53,7 +50,7 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
     }
 
     private void loadData() {
-        getSupportLoaderManager().initLoader(0, null, this);
+        new CallLoader().execute();
     }
 
     @Override
@@ -93,63 +90,59 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         return super.onOptionsItemSelected(item);
     }
 
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader cl = new CursorLoader(
-            this,              // context
-            Calls.CONTENT_URI, // Uri for the Call log
-            null,              // projection
-            null,              // selection
-            null,              // selectionArgs
-            null               // sortOrder
+
+    public void update() {
+        ((TextView)findViewById(R.id.n_calls)).setText(
+            String.format(mMainHeaderFormatString, map.getTotalCalls(), map.getTotalContacts())
         );
+        ((TextView)findViewById(R.id.n_contacts)).setText(
+        String.format(
+            mSubHeaderFormatString,
+            DateUtils.formatElapsedTimeNG(map.getTotalDuration()),
+            DateUtils.formatElapsedTimeNG(map.getTotalDuration()/map.getTotalCalls()))
+        );
+        mListView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
 
-        return cl;
-    }
-
-    public void onLoadFinished(Loader<Cursor> loader, final Cursor cursor) {
-        new Thread(new Runnable() {
-            public void run() {
-                final StatisticsMap hashmap = new StatisticsMap(cursor, MainActivity.this);
-                MainActivity.map = hashmap;
-                mAdapter = new CallStatAdapter(MainActivity.this, hashmap);
-
-                mListView.post(new Runnable() {
-                    public void run() {
-
-                        ((TextView)findViewById(R.id.n_calls)).setText(
-                            String.format(mMainHeaderFormatString, hashmap.getTotalCalls(), hashmap.getTotalContacts())
-                        );
-                        ((TextView)findViewById(R.id.n_contacts)).setText(
-                        String.format(
-                            mSubHeaderFormatString,
-                            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()),
-                            DateUtils.formatElapsedTimeNG(hashmap.getTotalDuration()/hashmap.getTotalCalls()))
-                        );
-                        mListView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
-
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                            // Animate the loading view to 0% opacity. After the animation ends,
-                            // set its visibility to GONE as an optimization step (it won't
-                            // participate in layout passes, etc.)
-                            mSpinner.animate()
-                                .alpha(0f)
-                                .setDuration(500)
-                                .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            mSpinner.setVisibility(View.GONE);
-                                        }
-                                    });
-                        } else {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+            // Animate the loading view to 0% opacity. After the animation ends,
+            // set its visibility to GONE as an optimization step (it won't
+            // participate in layout passes, etc.)
+            mSpinner.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
                             mSpinner.setVisibility(View.GONE);
                         }
-                    }
-                });
-            }
-        }).start();
+                    });
+        } else {
+            mSpinner.setVisibility(View.GONE);
+        }
     }
 
-    public void onLoaderReset(Loader<Cursor> loader) {
+    /*
+     * This class is used to load data asyncronously.
+     *
+     * The loader is not sufficient since we need to parse the CursorLoader
+     * result with time expensive operation that would block the UI thread.
+     */
+    private class CallLoader extends AsyncTask<Void, Void, StatisticsMap> {
+        @Override
+        protected StatisticsMap doInBackground(Void... params) {
+            Cursor cursor = MainActivity.this.getContentResolver().query(
+                Calls.CONTENT_URI, null, null, null, null
+            );
+
+            return new StatisticsMap(cursor, MainActivity.this);
+        }
+
+        @Override
+        public void onPostExecute(StatisticsMap map) {
+            MainActivity.this.map = map;
+            MainActivity.this.mAdapter = new CallStatAdapter(MainActivity.this, map);
+            MainActivity.this.update();
+        }
     }
 }

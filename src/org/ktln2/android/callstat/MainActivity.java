@@ -106,41 +106,10 @@ public class MainActivity extends SherlockFragmentActivity implements LoaderMana
         return cl;
     }
 
-    // TODO: create getter/setter for StatisticsMap
-
-    /*
-     * When the Cursor is loaded save the value retrieved in an Hashmap
-     * with as key the number/contact and as value the duration.
-     */
-    private StatisticsMap getValuesFromCursor(Cursor cursor) {
-        StatisticsMap hm = new StatisticsMap();
-
-        // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
-        cursor.moveToFirst();
-        while (!cursor.isLast()) {
-            long duration = cursor.getLong(
-                cursor.getColumnIndexOrThrow(Calls.DURATION)
-            );
-            String number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER));
-
-            cursor.moveToNext();
-
-            // if there is a + as first character then remove it and
-            // the following two numbers
-            if (number.startsWith("+")) {
-                number = number.substring(3);
-            }
-
-            hm.put(number, duration, this);
-        }
-
-        return hm;
-    }
-
     public void onLoadFinished(Loader<Cursor> loader, final Cursor cursor) {
         new Thread(new Runnable() {
             public void run() {
-                final StatisticsMap hashmap = getValuesFromCursor(cursor);
+                final StatisticsMap hashmap = new StatisticsMap(cursor, MainActivity.this);
                 MainActivity.map = hashmap;
                 mAdapter = new CallStatAdapter(MainActivity.this, hashmap);
 

@@ -135,7 +135,11 @@ public class MainActivity extends SherlockFragmentActivity {
                 Calls.CONTENT_URI, null, null, null, null
             );
 
-            return new StatisticsMap(cursor, MainActivity.this);
+            StatisticsMap smap = new StatisticsMap(cursor, MainActivity.this);
+
+            cursor.close();
+
+            return smap;
         }
 
         @Override

@@ -90,20 +90,7 @@ public class MainActivity extends SherlockFragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void update() {
-        ((TextView)findViewById(R.id.n_calls)).setText(
-            String.format(mMainHeaderFormatString, map.getTotalCalls(), map.getTotalContacts())
-        );
-        ((TextView)findViewById(R.id.n_contacts)).setText(
-        String.format(
-            mSubHeaderFormatString,
-            DateUtils.formatElapsedTimeNG(map.getTotalDuration()),
-            DateUtils.formatElapsedTimeNG(map.getTotalDuration()/map.getTotalCalls()))
-        );
-        mListView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-
+    private void toggleLoader(boolean fade) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
             // Animate the loading view to 0% opacity. After the animation ends,
             // set its visibility to GONE as an optimization step (it won't
@@ -120,6 +107,23 @@ public class MainActivity extends SherlockFragmentActivity {
         } else {
             mSpinner.setVisibility(View.GONE);
         }
+    }
+
+    public void update() {
+        ((TextView)findViewById(R.id.n_calls)).setText(
+            String.format(mMainHeaderFormatString, map.getTotalCalls(), map.getTotalContacts())
+        );
+        ((TextView)findViewById(R.id.n_contacts)).setText(
+            String.format(
+                mSubHeaderFormatString,
+                DateUtils.formatElapsedTimeNG(map.getTotalDuration()),
+                map.getTotalCalls() > 0 ?
+                    DateUtils.formatElapsedTimeNG(map.getTotalDuration()/map.getTotalCalls()) :
+                    "0"
+            )
+        );
+        mListView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 
     /*
@@ -147,6 +151,7 @@ public class MainActivity extends SherlockFragmentActivity {
             MainActivity.this.map = map;
             MainActivity.this.mAdapter = new CallStatAdapter(MainActivity.this, map);
             MainActivity.this.update();
+            MainActivity.this.toggleLoader(true);
         }
     }
 }

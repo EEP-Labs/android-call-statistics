@@ -1,6 +1,9 @@
 package org.ktln2.android.callstat;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.CallLog.Calls;
+
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Comparator;
@@ -22,6 +25,28 @@ class StatisticsMap extends TreeMap<String, CallStat> {
 
     // these will contain the duration related values
     private long mMin = 0, mMax = 0, mTotal = 0, mCount = 0;
+    public StatisticsMap(Cursor cursor, Context context) {
+        super();
+
+        // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
+        cursor.moveToFirst();
+        while (!cursor.isLast()) {
+            long duration = cursor.getLong(
+                cursor.getColumnIndexOrThrow(Calls.DURATION)
+            );
+            String number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER));
+
+            cursor.moveToNext();
+
+            // if there is a + as first character then remove it and
+            // the following two numbers
+            if (number.startsWith("+")) {
+                number = number.substring(3);
+            }
+
+            put(number, duration, context);
+        }
+    }
     /*
      * Return the data divided using some bins.
      *

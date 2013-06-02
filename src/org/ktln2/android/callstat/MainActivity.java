@@ -3,6 +3,7 @@ package org.ktln2.android.callstat;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.*;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
 
@@ -23,11 +25,8 @@ import com.google.ads.*;
 
 
 public class MainActivity extends SherlockFragmentActivity {
-    private CallStatAdapter mAdapter;
-    private ListView mListView;
     private AdView mAdView;
-    private View mEmptyView;
-    private ProgressBar mSpinner;
+    private ContactsCallsFragment mContactsCallsFragment;
 
     public static StatisticsMap map;
 
@@ -39,18 +38,18 @@ public class MainActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
-        mListView = (ListView)findViewById(R.id.list);
-        mEmptyView = findViewById(android.R.id.empty);
-        mSpinner = (ProgressBar)findViewById(R.id.loading_spinner);
 
-        mListView.setEmptyView(mEmptyView);
-        mListView.setAdapter(mAdapter);
+        // if we came from a previous instance don't reattach
+        // the fragments
+        if (savedInstanceState != null)
+            return;
 
-        loadData();
-    }
+        mContactsCallsFragment = new ContactsCallsFragment();
 
-    private void loadData() {
-        new CallLoader().execute();
+        getSupportFragmentManager()
+            .beginTransaction()
+            .add(R.id.main_container, mContactsCallsFragment)
+            .commit();
     }
 
     @Override
@@ -85,79 +84,112 @@ public class MainActivity extends SherlockFragmentActivity {
                 startActivity(graphIntent);
         }
         // FIXME: we don't want to order if R.id.graph was selected
-        mAdapter.order(ordering_type);
+        mContactsCallsFragment.order(ordering_type);
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void toggleLoader(boolean fade) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR1) {
-            // Animate the loading view to 0% opacity. After the animation ends,
-            // set its visibility to GONE as an optimization step (it won't
-            // participate in layout passes, etc.)
-            mSpinner.animate()
-                .alpha(0f)
-                .setDuration(500)
-                .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mSpinner.setVisibility(View.GONE);
-                        }
-                    });
-        } else {
-            mSpinner.setVisibility(View.GONE);
-        }
-    }
+    public class ContactsCallsFragment extends Fragment {
+        private CallStatAdapter mAdapter;
+        private ListView mListView;
+        private View mEmptyView;
+        private ProgressBar mSpinner;
 
-    public void update() {
-        ((TextView)findViewById(R.id.n_calls)).setText(
-            String.format(mMainHeaderFormatString, map.getTotalCalls(), map.getTotalContacts())
-        );
-        ((TextView)findViewById(R.id.n_contacts)).setText(
-            String.format(
-                mSubHeaderFormatString,
-                DateUtils.formatElapsedTimeNG(map.getTotalDuration()),
-                map.getTotalCalls() > 0 ?
-                    DateUtils.formatElapsedTimeNG(map.getTotalDuration()/map.getTotalCalls()) :
-                    "0"
-            )
-        );
-        mListView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    /*
-     * This class is used to load data asyncronously.
-     *
-     * The loader is not sufficient since we need to parse the CursorLoader
-     * result with time expensive operation that would block the UI thread.
-     */
-    private class CallLoader extends AsyncTask<Void, Void, StatisticsMap> {
         @Override
-        protected StatisticsMap doInBackground(Void... params) {
-            Cursor cursor = MainActivity.this.getContentResolver().query(
-                Calls.CONTENT_URI, null, null, null, null
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View fragmentLayout = inflater.inflate(R.layout.contacts_calls, null);
+
+            mListView = (ListView)fragmentLayout.findViewById(R.id.list);
+            mEmptyView = fragmentLayout.findViewById(android.R.id.empty);
+            mSpinner = (ProgressBar)fragmentLayout.findViewById(R.id.loading_spinner);
+
+            mListView.setEmptyView(mEmptyView);
+            mListView.setAdapter(mAdapter);
+
+            loadData();
+
+            return fragmentLayout;
+        }
+
+        private void loadData() {
+            new CallLoader().execute();
+        }
+
+        private void toggleLoader() {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR1) {
+                // Animate the loading view to 0% opacity. After the animation ends,
+                // set its visibility to GONE as an optimization step (it won't
+                // participate in layout passes, etc.)
+                mSpinner.animate()
+                    .alpha(0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mSpinner.setVisibility(View.GONE);
+                            }
+                        });
+            } else {
+                mSpinner.setVisibility(View.GONE);
+            }
+        }
+
+        public void order(int ordering_type) {
+            mAdapter.order(ordering_type);
+        }
+
+        public void update() {
+            ((TextView)findViewById(R.id.n_calls)).setText(
+                String.format(mMainHeaderFormatString, map.getTotalCalls(), map.getTotalContacts())
             );
-
-            if (cursor.getCount() == 0) {
-                return null;
-            }
-
-            StatisticsMap smap = new StatisticsMap(cursor, MainActivity.this);
-
-            cursor.close();
-
-            return smap;
+            ((TextView)findViewById(R.id.n_contacts)).setText(
+                String.format(
+                    mSubHeaderFormatString,
+                    DateUtils.formatElapsedTimeNG(map.getTotalDuration()),
+                    map.getTotalCalls() > 0 ?
+                        DateUtils.formatElapsedTimeNG(map.getTotalDuration()/map.getTotalCalls()) :
+                        "0"
+                )
+            );
+            mListView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
         }
 
-        @Override
-        public void onPostExecute(StatisticsMap map) {
-            MainActivity.this.map = map;
-            if (map != null) {
-                MainActivity.this.mAdapter = new CallStatAdapter(MainActivity.this, map);
-                MainActivity.this.update();
+        /*
+         * This class is used to load data asyncronously.
+         *
+         * The loader is not sufficient since we need to parse the CursorLoader
+         * result with time expensive operation that would block the UI thread.
+         */
+        private class CallLoader extends AsyncTask<Void, Void, StatisticsMap> {
+            @Override
+            protected StatisticsMap doInBackground(Void... params) {
+                Cursor cursor = getActivity().getContentResolver().query(
+                    Calls.CONTENT_URI, null, null, null, null
+                );
+
+                if (cursor.getCount() == 0) {
+                    cursor.close();
+                    return null;
+                }
+
+                StatisticsMap smap = new StatisticsMap(cursor, getActivity());
+
+                cursor.close();
+
+                return smap;
             }
-            MainActivity.this.toggleLoader(true);
+
+            @Override
+            public void onPostExecute(StatisticsMap map) {
+                MainActivity.this.map = map;
+                if (map != null) {
+                    mAdapter = new CallStatAdapter(getActivity(), map);
+                    update();
+                }
+                toggleLoader();
+            }
         }
+
     }
 }

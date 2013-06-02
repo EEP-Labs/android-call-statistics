@@ -169,6 +169,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 );
 
                 if (cursor.getCount() == 0) {
+                    cursor.close();
                     return null;
                 }
 

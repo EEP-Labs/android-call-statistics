@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <TextView
+        android:id="@+id/n_calls"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:textAppearance="@style/RelevantFont"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/n_contacts"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/n_calls"
+    />
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@id/n_contacts"
+        android:animateLayoutChanges="true"
+    />
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentTop="true"
+        android:gravity="top|center_horizontal"
+        android:text="No statistics available"
+        android:textSize="20dip"
+    />
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/loading_animation"
+        style="@android:style/Widget.ProgressBar.Large.Inverse"
+    />
+</RelativeLayout>

@@ -3,3 +3,5 @@
 local.properties
 /tests/bin
 /tests/gen
+/.gradle
+/build

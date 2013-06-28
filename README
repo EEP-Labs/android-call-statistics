@@ -19,3 +19,47 @@ GETTING STARTED
  $ android update project --library ../relative/path/to/GraphView/
  $ cp GoogleAdMobAdsSdk-X.X.X.jar libs/
  $ ant debug && ant installd && adb logcat
+
+If instead you want to use the new build system with gradle you can configure the
+project with a settings.gradle file like the following
+
+    include 'actionbarsherlock', 'graphview'
+
+    project(':actionbarsherlock').projectDir = new File(settingsDir, '../JakeWharton-ActionBarSherlock-e5c2d1c/library/')
+    project(':graphview').projectDir = new File(settingsDir, '../GraphView/')
+
+and then launch
+
+  $ gradle build
+
+Obviously you have to configure the subproject with a library setting like
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+
+        dependencies {
+            classpath 'com.android.tools.build:gradle:0.4.2'
+        }
+    }
+
+    apply plugin: 'android-library'
+
+    dependencies {
+        compile fileTree('libs')
+    }
+
+    android {
+        compileSdkVersion 17
+        buildToolsVersion "17.0.0"
+        sourceSets {
+            main {
+                manifest.srcFile 'AndroidManifest.xml'
+                java.srcDirs = ['src']
+                resources.srcDirs = ['src']
+                res.srcDirs = ['res']
+                assets.srcDirs = ['assets']
+            }
+        }
+    }

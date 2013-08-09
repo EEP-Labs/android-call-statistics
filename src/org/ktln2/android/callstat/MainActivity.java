@@ -57,6 +57,10 @@ public class MainActivity extends SherlockFragmentActivity {
         return mLoader;
     }
 
+    public ContactsCallsFragment getFragment() {
+        return mContactsCallsFragment;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
@@ -99,6 +103,10 @@ public class MainActivity extends SherlockFragmentActivity {
         private ListView mListView;
         private View mEmptyView;
         private ProgressBar mSpinner;
+
+        public CallStatAdapter getAdapter() {
+            return mAdapter;
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -29,6 +29,7 @@ public class MainActivity extends SherlockFragmentActivity {
     private ContactsCallsFragment mContactsCallsFragment;
 
     public static StatisticsMap map;
+    private ContactsCallsFragment.CallLoader mLoader;
 
     private final static String mMainHeaderFormatString = "%d calls from %d contacts";
     private final static String mSubHeaderFormatString = "%s (%s in average)";
@@ -50,6 +51,10 @@ public class MainActivity extends SherlockFragmentActivity {
             .beginTransaction()
             .add(R.id.main_container, mContactsCallsFragment)
             .commit();
+    }
+
+    public ContactsCallsFragment.CallLoader getLoader() {
+        return mLoader;
     }
 
     @Override
@@ -112,7 +117,8 @@ public class MainActivity extends SherlockFragmentActivity {
         }
 
         private void loadData() {
-            new CallLoader().execute();
+            mLoader = new CallLoader();
+            mLoader.execute();
         }
 
         private void toggleLoader() {
@@ -161,7 +167,7 @@ public class MainActivity extends SherlockFragmentActivity {
          * The loader is not sufficient since we need to parse the CursorLoader
          * result with time expensive operation that would block the UI thread.
          */
-        private class CallLoader extends AsyncTask<Void, Void, StatisticsMap> {
+        public class CallLoader extends AsyncTask<Void, Void, StatisticsMap> {
             @Override
             protected StatisticsMap doInBackground(Void... params) {
                 Cursor cursor = getActivity().getContentResolver().query(

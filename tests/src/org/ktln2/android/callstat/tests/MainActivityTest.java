@@ -1,8 +1,15 @@
-package org.ktln2.android.callstat;
+package org.ktln2.android.callstat.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
+import android.app.Activity;
+import android.util.Log;
+import org.ktln2.android.callstat.MainActivity;
+import org.ktln2.android.callstat.R;
+import org.ktln2.android.callstat.MainActivity.ContactsCallsFragment.CallLoader;
 
+import java.lang.Exception;
+import java.lang.Thread;
 
 /**
  * This is a simple framework for a test of an Application.  See
@@ -13,8 +20,6 @@ import android.widget.ListView;
  * adb shell am instrument -w \
  * -e class org.ktln2.android.callstat.MainActivityTest \
  * org.ktln2.android.callstat.tests/android.test.InstrumentationTestRunner
- *
- * <b>Note:</b> this launches the application and wait all to be loaded.
  */
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
     private MainActivity mActivity;
@@ -25,12 +30,20 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
+         super.setUp();
 
-        mActivity = getActivity();
+         mActivity = getActivity();
+        getInstrumentation().waitForIdleSync();
     }
 
     public void testWTF() {
+        CallLoader contactLoader = mActivity.getLoader();
+
+        try {contactLoader.get();} catch (Exception e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {}
+
         assertTrue(((ListView)mActivity.findViewById(R.id.list)).getAdapter() != null);
     }
 

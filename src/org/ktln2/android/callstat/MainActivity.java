@@ -21,11 +21,10 @@ import android.provider.CallLog.Calls;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.Animator;
 
-import com.google.ads.*;
+//import com.google.ads.*;
 
 
 public class MainActivity extends SherlockFragmentActivity {
-    private AdView mAdView;
     private ContactsCallsFragment mContactsCallsFragment;
 
     public static StatisticsMap map;
@@ -55,6 +54,10 @@ public class MainActivity extends SherlockFragmentActivity {
 
     public ContactsCallsFragment.CallLoader getLoader() {
         return mLoader;
+    }
+
+    public ContactsCallsFragment getFragment() {
+        return mContactsCallsFragment;
     }
 
     @Override
@@ -99,6 +102,10 @@ public class MainActivity extends SherlockFragmentActivity {
         private ListView mListView;
         private View mEmptyView;
         private ProgressBar mSpinner;
+
+        public CallStatAdapter getAdapter() {
+            return mAdapter;
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

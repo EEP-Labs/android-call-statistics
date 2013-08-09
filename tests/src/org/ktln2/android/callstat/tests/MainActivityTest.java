@@ -1,6 +1,7 @@
 package org.ktln2.android.callstat.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.RenamingDelegatingContext;
 import android.widget.ListView;
 import android.app.Activity;
 import android.util.Log;
@@ -25,18 +26,19 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     private MainActivity mActivity;
 
     public MainActivityTest() {
-        super("org.ktln2.android.callstat", MainActivity.class);
+        super(MainActivity.class);
     }
 
     @Override
     protected void setUp() throws Exception {
          super.setUp();
 
-         mActivity = getActivity();
-        getInstrumentation().waitForIdleSync();
-    }
+        mActivity = getActivity();
 
-    public void testWTF() {
+        RenamingDelegatingContext renaming = new RenamingDelegatingContext(mActivity, "test_");
+
+        getInstrumentation().waitForIdleSync();
+
         CallLoader contactLoader = mActivity.getLoader();
 
         try {contactLoader.get();} catch (Exception e) {}
@@ -44,7 +46,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
             Thread.sleep(1000);
         } catch (Exception e) {}
 
-        assertTrue(((ListView)mActivity.findViewById(R.id.list)).getAdapter() != null);
+        assertTrue(mActivity.getFragment().getAdapter() != null);
+    }
+
+    public void testWTF() {
+        // http://developer.android.com/reference/android/test/RenamingDelegatingContext.html
+        assertTrue(mActivity.getFragment().getAdapter().getCount() == 138);
     }
 
 }

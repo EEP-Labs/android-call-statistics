@@ -33,13 +33,11 @@ class StatisticsMap extends TreeMap<String, CallStat> {
 
         // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
         cursor.moveToFirst();
-        while (!cursor.isLast()) {
+        do {
             long duration = cursor.getLong(
                 cursor.getColumnIndexOrThrow(Calls.DURATION)
             );
             String number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER));
-
-            cursor.moveToNext();
 
             // if there is a + as first character then remove it and
             // the following two numbers
@@ -48,7 +46,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
             }
 
             put(number, duration, context);
-        }
+        } while (cursor.moveToNext());
     }
     /*
      * Return the data divided using some bins.

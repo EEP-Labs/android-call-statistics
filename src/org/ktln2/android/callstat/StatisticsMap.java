@@ -28,15 +28,16 @@ class StatisticsMap extends TreeMap<String, CallStat> {
     public StatisticsMap(Cursor cursor, Context context) {
         super();
 
+        if (cursor.getCount() == 0)
+            return;
+
         // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
         cursor.moveToFirst();
-        while (!cursor.isLast()) {
+        do {
             long duration = cursor.getLong(
                 cursor.getColumnIndexOrThrow(Calls.DURATION)
             );
             String number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER));
-
-            cursor.moveToNext();
 
             // if there is a + as first character then remove it and
             // the following two numbers
@@ -45,7 +46,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
             }
 
             put(number, duration, context);
-        }
+        } while (cursor.moveToNext());
     }
     /*
      * Return the data divided using some bins.
@@ -158,7 +159,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
 
         values.addAll(values());
 
-        return values.toArray(new CallStat[1]);
+        return values.toArray(new CallStat[0]);
     }
 
     public CallStat[] getCallStatOrderedByMaxDuration() {

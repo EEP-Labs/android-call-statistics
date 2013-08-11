@@ -43,22 +43,24 @@ public class CallStat {
         );
 
         // if the cursor is in a good state and has results
-        // continue and go for it
-        if (cursor != null && cursor.moveToFirst()) {
-            mContactName = cursor.getCount() > 0 ?
+        if(cursor != null) {
+            // continues and go for it
+            if (cursor.moveToFirst()) {
+                mContactName = cursor.getCount() > 0 ?
                     cursor.getString(cursor.getColumnIndexOrThrow(Contacts.DISPLAY_NAME_PRIMARY)) : "";
 
-            try {
-                mContactPhoto = BitmapFactory.decodeStream(
-                    openPhoto(
-                        cursor.getLong(cursor.getColumnIndexOrThrow(Contacts._ID)),
-                        context)
-                );
-            } catch (android.database.CursorIndexOutOfBoundsException e) {
-                e.printStackTrace();
+                try {
+                    mContactPhoto = BitmapFactory.decodeStream(
+                            openPhoto(
+                                cursor.getLong(cursor.getColumnIndexOrThrow(Contacts._ID)),
+                                context)
+                            );
+                } catch (android.database.CursorIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
             }
+            cursor.close();
         }
-        cursor.close();
     }
 
     /*

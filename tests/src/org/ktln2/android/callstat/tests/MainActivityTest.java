@@ -41,17 +41,18 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         CallLoader contactLoader = mActivity.getLoader();
 
-        try {contactLoader.get();} catch (Exception e) {}
+        // wait for the loader to finish the loading
+        try {contactLoader.get();} catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             Thread.sleep(1000);
         } catch (Exception e) {}
-
-        assertTrue(mActivity.getFragment().getAdapter() != null);
     }
 
     public void testWTF() {
         // http://developer.android.com/reference/android/test/RenamingDelegatingContext.html
-        assertTrue(mActivity.getFragment().getAdapter().getCount() == 138);
+        assertTrue(mActivity.getFragment().getAdapter() != null);
     }
 
 }

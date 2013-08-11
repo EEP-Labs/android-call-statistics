@@ -161,7 +161,7 @@ class StatisticsMap extends TreeMap<String, CallStat> {
 
         values.addAll(values());
 
-        return values.toArray(new CallStat[1]);
+        return values.toArray(new CallStat[0]);
     }
 
     public CallStat[] getCallStatOrderedByMaxDuration() {

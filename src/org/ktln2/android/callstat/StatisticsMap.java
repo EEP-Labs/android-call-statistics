@@ -28,6 +28,9 @@ class StatisticsMap extends TreeMap<String, CallStat> {
     public StatisticsMap(Cursor cursor, Context context) {
         super();
 
+        if (cursor.getCount() == 0)
+            return;
+
         // otherwise CursorIndexOutOfBoundsException: Index -1 requested, with a size of 147
         cursor.moveToFirst();
         while (!cursor.isLast()) {

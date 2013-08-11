@@ -182,11 +182,6 @@ public class MainActivity extends SherlockFragmentActivity {
                     Calls.CONTENT_URI, null, null, null, null
                 );
 
-                if (cursor.getCount() == 0) {
-                    cursor.close();
-                    return null;
-                }
-
                 StatisticsMap smap = new StatisticsMap(cursor, getActivity());
 
                 cursor.close();
@@ -197,10 +192,8 @@ public class MainActivity extends SherlockFragmentActivity {
             @Override
             public void onPostExecute(StatisticsMap map) {
                 MainActivity.this.map = map;
-                if (map != null) {
-                    mAdapter = new CallStatAdapter(getActivity(), map);
-                    update();
-                }
+                mAdapter = new CallStatAdapter(getActivity(), map);
+                update();
                 toggleLoader();
             }
         }

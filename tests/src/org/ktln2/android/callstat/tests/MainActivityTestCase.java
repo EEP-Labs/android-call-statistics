@@ -10,12 +10,10 @@ import android.test.mock.MockContentResolver;
 import android.test.mock.MockContentProvider;
 
 import android.content.Intent;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.ContentResolver;
 import android.support.v4.app.FragmentManager;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.net.Uri;
 import android.provider.CallLog;
 
 import java.lang.Exception;
@@ -32,27 +30,15 @@ public class MainActivityTestCase extends ActivityUnitTestCase<MainActivity> {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        // https://gist.github.com/avh4/1450898
-        // Instantiate our content provider 
-        MockContentProvider mProvider = new MockContentProvider(getInstrumentation().getTargetContext()) {
-            @Override
-            public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
-                return new MatrixCursor(new String[]{""});
-            }
-        };
-
-        // Create a mock ContentResolver that will give access to our content
-        // provider and nothing else
-        final MockContentResolver mResolver = new MockContentResolver();
-        mResolver.addProvider(CallLog.AUTHORITY, mProvider);
-
 
         // http://paulbutcher.com/2011/03/12/mock-objects-on-android-with-borachio-part-2/
         ContextWrapper c = new ContextWrapper(getInstrumentation().getTargetContext()) {
             @Override
             public ContentResolver getContentResolver() {
-                return mResolver;
+                return ContentResolverBuilder.buildWithEmptyProvider(
+                    getInstrumentation().getTargetContext(),
+                    CallLog.AUTHORITY
+                );
             }
         };
 

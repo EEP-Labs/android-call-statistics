@@ -26,6 +26,7 @@
         android:layout_weight="1"
         android:layout_below="@id/n_contacts"
         android:animateLayoutChanges="true"
+        android:divider="@android:color/transparent"
     />
     <TextView
         android:id="@android:id/empty"

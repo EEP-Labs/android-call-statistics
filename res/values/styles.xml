@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="RelevantFont" parent="@android:style/TextAppearance.Medium">
+    <style name="CallFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:typeface">normal</item>
+    </style>
+    <style name="RelevantFont" parent="CallFont">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="MediumRelevantFont" parent="CallFont">
         <item name="android:textSize">15dp</item>
     </style>
-    <style name="LessRelevantFont" parent="@android:style/TextAppearance.Medium">
+    <style name="LessRelevantFont" parent="CallFont">
         <item name="android:textSize">10dp</item>
     </style>
 </resources>

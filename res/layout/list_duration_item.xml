@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:paddingRight="5dp"
+    android:paddingLeft="5dp"
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp"
     >
-    <LinearLayout
-        android:id="@+id/contact_details"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <TextView
-            android:id="@+id/contact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/RelevantFont"
-        />
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/LessRelevantFont"
-        />
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_below="@id/contact_details"
-    />
-    </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_default_1"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:alpha="0.5"
+        />
     <!-- here go the information about the call made by the user -->
     <LinearLayout
+        android:id="@+id/contact_data_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="right"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
         >
         <TextView
             android:id="@+id/contact_total_calls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="666 calls for 1h42m"
+            style="@style/RelevantFont"
         />
         <!--TextView
             android:id="@+id/contact_total_duration"
@@ -52,16 +43,45 @@
             android:id="@+id/contact_avg_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-        />
+            android:text="Average call: 1m42s"
+            style="@style/MediumRelevantFont"
+            />
         <TextView
             android:id="@+id/contact_max_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-        />
+            android:text="Max call: 42m47s"
+            style="@style/MediumRelevantFont"
+            />
         <TextView
             android:id="@+id/contact_min_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-        />
+            android:text="Min call: 54s"
+            style="@style/MediumRelevantFont"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/contact_details"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_alignBottom="@id/contact_data_container"
+        >
+        <TextView
+            android:id="@+id/contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/RelevantFont"
+            android:text="Pippo"
+            />
+        <TextView
+            android:id="@+id/number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/MediumRelevantFont"
+            android:text="+3966666666"
+            />
     </LinearLayout>
 </RelativeLayout>

@@ -1,8 +1,8 @@
 package org.ktln2.android.callstat;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.view.View;
@@ -29,6 +29,12 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
     public final static int CALL_STAT_ADAPTER_ORDERING_MAX_DURATION   = 2;
     public final static int CALL_STAT_ADAPTER_ORDERING_MIN_DURATION   = 3;
     public final static int CALL_STAT_ADAPTER_ORDERING_AVG_DURATION   = 4;
+
+    final int[] CONTACTS_DEFAULT = new int[] {
+            R.drawable.ic_default_1,
+            R.drawable.ic_default_2,
+            R.drawable.ic_default_3,
+    };
     // the only role of this class is to maintain
     // the expensive information about list item
     // without quering everytime the layout
@@ -104,7 +110,12 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
 
 
         // show contact photo
-        holder.photoView.setImageBitmap(entry.getContactPhoto());
+        Bitmap bitmap = entry.getContactPhoto();
+        if (bitmap != null) {
+            holder.photoView.setImageBitmap(bitmap);
+        } else {
+                holder.photoView.setImageResource(CONTACTS_DEFAULT[position % 3]);
+        }
 
         return view;
     }

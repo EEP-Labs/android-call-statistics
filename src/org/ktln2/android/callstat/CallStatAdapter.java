@@ -65,7 +65,7 @@ public class CallStatAdapter extends ArrayAdapter<CallStat> {
         if (view == null) {
             LayoutInflater inflater =
                 (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_duration_item, null);
+            view = inflater.inflate(R.layout.list_duration_item, viewGroup, false);
 
             holder = new Holder();
             holder.numberView  = (TextView)view.findViewById(R.id.number);
